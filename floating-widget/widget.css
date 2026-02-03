@@ -1,13 +1,13 @@
-/* ===== Floating Action Widget ===== */
+/* ===== Container ===== */
 .fab-container {
 	position: fixed;
 	right: 24px;
 	bottom: 24px;
 	z-index: 9999;
 	font-family: system-ui, -apple-system, sans-serif;
-	justify-items: center;
 }
 
+/* ===== Main button ===== */
 .fab-main {
 	width: 56px;
 	height: 56px;
@@ -27,6 +27,14 @@
 	transform: scale(1.05);
 }
 
+.fab-main-icon {
+	width: 26px;
+	height: 26px;
+	object-fit: contain;
+	pointer-events: none;
+}
+
+/* ===== Items ===== */
 .fab-items {
 	display: flex;
 	flex-direction: column;
@@ -58,6 +66,7 @@
 	position: relative;
 }
 
+/* ===== Tooltip ===== */
 .fab-tooltip {
 	position: absolute;
 	right: 60px;
@@ -79,6 +88,7 @@
 	transform: translateX(0);
 }
 
+/* ===== Greeting ===== */
 .fab-greeting {
 	position: absolute;
 	right: 0;
@@ -98,40 +108,18 @@
 	to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== Pulse animation ===== */
+/* ===== Pulse (ONLY main button) ===== */
 @keyframes fabPulse {
-	0% {
-		box-shadow: 0 0 0 0 rgba(0,0,0,.35);
-	}
-	70% {
-		box-shadow: 0 0 0 14px rgba(0,0,0,0);
-	}
-	100% {
-		box-shadow: 0 0 0 0 rgba(0,0,0,0);
-	}
+	0% { box-shadow: 0 0 0 0 rgba(0,0,0,.35); }
+	70% { box-shadow: 0 0 0 14px rgba(0,0,0,0); }
+	100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
 }
 
-.fab-pulse {
+.fab-main.fab-pulse {
 	animation: fabPulse 2s infinite;
 }
 
-.fab-pulse.paused {
-	animation-play-state: paused;
-}
-
-.fab-main-icon {
-	width: 26px;
-	height: 26px;
-	object-fit: contain;
-	pointer-events: none;
-}
-
-/* ===== Custom button styles ===== */
-.btn-phone {
-	background: #111;
-	color: #fff;
-}
-
+/* ===== Custom classes ===== */
 .btn-telegram {
 	background: #111;
 	color: #fff;
@@ -144,9 +132,4 @@
 
 .is-primary {
 	box-shadow: 0 0 0 3px rgba(0,0,0,.15);
-}
-
-/* Остановка pulse при hover */
-.fab-item:hover.fab-pulse {
-	animation-play-state: paused;
 }

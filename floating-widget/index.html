@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Floating Widget Demo</title>
+	<link rel="stylesheet" href="widget.css">
+</head>
+<body>
 
+<h1>Demo Page</h1>
+<p>Пример работы Floating Widget</p>
+
+<!-- Widget mount point -->
+<div id="fab-widget"></div>
+
+<script src="widget.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	new FloatingWidget('#fab-widget', {
+		mainIcon: '/icons/chat.svg',  // path to file, emoji, or inline SVG
+		greeting: {
+			enabled: true,
+			text: 'Привет! 👋<br>Чем могу помочь?',
+			autoHide: true,
+			delay: null
+		},
+		pulse: {
+			enabled: true,
+			target: 'main',
+			pulseDelay: 3000,
+			pulseOnce: false,
+			pulseUntilClick: true
+		},
+		buttons: [
+			{
+				icon: '📞',
+				tooltip: 'Позвонить',
+				background: '#2ecc71',
+				color: '#fff',
+				pulse: true,
+				pulseDelay: 2000,
+				pulseOnce: true,
+				onClick: () => alert('Звонок')
+			},
+			{
+				icon: '💬',
+				tooltip: 'Telegram',
+				background: '#229ED9',
+				color: '#fff',
+				hoverBackground: '#1c8acb',
+				alwaysShowLabel: true,
+				classes: ['btn-telegram','is-primary'],
+				onClick: () => window.open('https://t.me/', '_blank')
+			},
+			{
+				icon: '✉️',
+				tooltip: 'Email',
+				background: '#f1c40f',
+				color: '#111',
+				classes: 'btn-mail',
+				onClick: () => alert('Письмо')
+			}
+		]
+	})
+})
+</script>
+
+</body>
+</html>

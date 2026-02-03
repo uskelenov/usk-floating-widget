@@ -71,9 +71,21 @@ class FloatingWidget {
 				const tip = document.createElement('div')
 				tip.className = 'fab-tooltip'
 				tip.innerHTML = b.tooltip
+			
+				if (b.tooltipStyle) {
+					if (b.tooltipStyle.background) {
+						tip.style.background = b.tooltipStyle.background
+					}
+					if (b.tooltipStyle.color) {
+						tip.style.color = b.tooltipStyle.color
+					}
+				}
+			
 				btn.appendChild(tip)
-
-				if (b.alwaysShowLabel) btn.classList.add('show-label')
+			
+				if (b.alwaysShowLabel) {
+					btn.classList.add('show-label')
+				}
 			}
 
 			btn.addEventListener('click', b.onClick || (() => {}))

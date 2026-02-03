@@ -180,9 +180,10 @@ class FloatingWidget {
 			this.stopPulse()
 		} else {
 			// при закрытии возобновляем пульсацию
-			if (p.enabled && p.target === 'main') {
-				this.startPulse(p)
-			}
+			const target = p.target || 'main';
+            if (p.enabled && target === 'main') {
+                this.startPulse(p)
+            }
 		}
 	}
 }

@@ -1,21 +1,21 @@
 class FloatingWidget {
 	constructor(selector, options = {}) {
-		this.root = document.querySelector(selector)
-		if (!this.root) return
+		/* =========================
+			INIT
+		========================= */
+		this.container = document.querySelector(selector)
+		if (!this.container) return
 
 		this.options = options
 		this.isOpen = false
 		this.clickedOnce = false
 		this.pulseTimer = null
 
-		this.container = document.createElement('div')
-		this.container.className = 'fab-container'
+		this.container.classList.add('fab-container')
 
 		this.renderGreeting()
 		this.renderItems()
 		this.renderMain()
-
-		this.root.appendChild(this.container)
 	}
 
 	/* =========================
@@ -45,32 +45,36 @@ class FloatingWidget {
 	}
 
 	/* =========================
-		ITEMS
+		ITEMS / BUTTONS
 	========================= */
 	renderItems() {
 		const buttons = this.options.buttons || []
 		if (!buttons.length) return
 
-		this.itemsWrap = document.createElement('div')
-		this.itemsWrap.className = 'fab-items'
+		this.items = document.createElement('div')
+		this.items.className = 'fab-items'
 
 		buttons.forEach(b => {
 			const btn = document.createElement('div')
 			btn.className = 'fab-item'
 			btn.innerHTML = this.renderIcon(b.icon)
 
+			// Цвета кнопки
 			if (b.background) btn.style.background = b.background
 			if (b.color) btn.style.color = b.color
 
+			// Hover background
 			if (b.hoverBackground) {
 				btn.addEventListener('mouseenter', () => btn.style.background = b.hoverBackground)
 				btn.addEventListener('mouseleave', () => btn.style.background = b.background)
 			}
 
+			// Пользовательские классы
 			if (b.classes) {
 				[].concat(b.classes).forEach(c => btn.classList.add(c))
 			}
 
+			// Tooltip
 			if (b.tooltip) {
 				const tip = document.createElement('div')
 				tip.className = 'fab-tooltip'
@@ -82,15 +86,16 @@ class FloatingWidget {
 				}
 
 				btn.appendChild(tip)
+
 				if (b.alwaysShowLabel) btn.classList.add('show-label')
 			}
 
-			if (b.onClick) btn.addEventListener('click', e => { e.stopPropagation(); b.onClick() })
-
-			this.itemsWrap.appendChild(btn)
+			// Click handler
+			btn.addEventListener('click', b.onClick || (() => {}))
+			this.items.appendChild(btn)
 		})
 
-		this.container.appendChild(this.itemsWrap)
+		this.container.appendChild(this.items)
 	}
 
 	/* =========================
@@ -101,77 +106,80 @@ class FloatingWidget {
 		this.mainBtn.className = 'fab-main'
 		this.mainBtn.innerHTML = this.renderIcon(this.options.mainIcon)
 
-		// main styles
+		// Основные стили
 		const s = this.options.mainStyle || {}
 		if (s.background) this.mainBtn.style.background = s.background
 		if (s.color) this.mainBtn.style.color = s.color
 
-		// pulse settings
+		// Цвет пульсации
 		const p = this.options.pulse || {}
 		if (p.pulseColor) this.mainBtn.style.setProperty('--fab-pulse-color', p.pulseColor)
 
 		this.mainBtn.addEventListener('click', () => this.toggle())
-
 		this.container.appendChild(this.mainBtn)
 
-		if (p.enabled && p.target === 'main') this.startPulse(p)
+		// Запуск пульсации
+		if (p.enabled) this.startPulse(p)
 	}
 
+	/* =========================
+		ICON RENDER
+	========================= */
 	renderIcon(icon) {
-		if (!icon) return ''
-		if (typeof icon === 'string' && !icon.includes('<') && /\.(svg|png|jpe?g|webp|gif)$/i.test(icon)) {
+		if (
+			typeof icon === 'string' &&
+			!icon.includes('<') &&
+			/\.(svg|png|jpe?g|webp|gif)$/i.test(icon)
+		) {
 			return `<img src="${icon}" class="fab-main-icon">`
 		}
-		return icon
+		return icon || ''
 	}
 
 	/* =========================
 		PULSE
 	========================= */
-	startPulse(p) {
-		if (!p) p = this.options.pulse || {}
-		const delay = p.pulseDelay || 2500
-	
-		this.stopPulse()
-	
+	startPulse(pulse) {
+		const delay = pulse.pulseDelay || 2500
+		this.stopPulse() // останавливаем старый интервал
+
 		this.pulseTimer = setInterval(() => {
 			if (!this.isOpen) {
-				// сброс анимации
+				// Сброс анимации
 				this.mainBtn.classList.remove('fab-pulse')
-				void this.mainBtn.offsetWidth // триггер ререндеринга
+				void this.mainBtn.offsetWidth // trigger reflow
 				this.mainBtn.classList.add('fab-pulse')
-	
-				if (p.pulseOnce) this.stopPulse()
+
+				if (pulse.pulseOnce) this.stopPulse()
 			}
 		}, delay)
 	}
 
 	stopPulse() {
-		clearInterval(this.pulseTimer)
+		if (this.pulseTimer) clearInterval(this.pulseTimer)
 		this.pulseTimer = null
 		if (this.mainBtn) this.mainBtn.classList.remove('fab-pulse')
 	}
 
 	/* =========================
-		TOGGLE
+		TOGGLE WIDGET
 	========================= */
 	toggle() {
 		this.isOpen = !this.isOpen
 		this.container.classList.toggle('open', this.isOpen)
-	
+
 		if (!this.clickedOnce) {
 			this.hideGreeting()
 			this.clickedOnce = true
 		}
-	
+
 		const p = this.options.pulse || {}
-	
+
 		if (this.isOpen) {
-			// Сбрасываем пульсацию при открытии
+			// при открытии сбрасываем пульсацию
 			this.stopPulse()
-			this.mainBtn.classList.remove('fab-pulse')
 		} else {
-			// Возобновляем пульсацию при закрытии
+			// при закрытии возобновляем пульсацию
 			if (p.enabled && p.target === 'main') {
 				this.startPulse(p)
 			}

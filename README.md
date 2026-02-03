@@ -19,9 +19,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 		greeting:{enabled:true,text:'Hello! 👋<br>How can I help you?',autoHide:true,delay:null},
 		pulse:{enabled:true,target:'main',pulseDelay:3000,pulseUntilClick:true},
 		buttons:[
-			{icon:'📞',tooltip:'Call',background:'#2ecc71',color:'#fff',pulse:true,pulseDelay:2000,pulseOnce:true,onClick:()=>alert('Звонок')},
+			{icon:'📞',tooltip:'Call',background:'#2ecc71',color:'#fff',pulse:true,pulseDelay:2000,pulseOnce:true,onClick:()=>alert('Call')},
 			{icon:'💬',tooltip:'Telegram',background:'#229ED9',color:'#fff',hoverBackground:'#1c8acb',alwaysShowLabel:true,classes:['btn-telegram','is-primary'],onClick:()=>window.open('https://t.me/','_blank')},
-			{icon:'✉️',tooltip:'Email',background:'#f1c40f',color:'#111',classes:'btn-mail',onClick:()=>alert('Письмо')}
+			{icon:'✉️',tooltip:'Email',background:'#f1c40f',color:'#111',classes:'btn-mail',onClick:()=>alert('Email')}
 		]
 	})
 });

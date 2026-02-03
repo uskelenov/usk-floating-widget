@@ -131,13 +131,16 @@ class FloatingWidget {
 	startPulse(p) {
 		if (!p) p = this.options.pulse || {}
 		const delay = p.pulseDelay || 2500
-
+	
 		this.stopPulse()
+	
 		this.pulseTimer = setInterval(() => {
 			if (!this.isOpen) {
+				// сброс анимации
 				this.mainBtn.classList.remove('fab-pulse')
-				void this.mainBtn.offsetWidth
+				void this.mainBtn.offsetWidth // триггер ререндеринга
 				this.mainBtn.classList.add('fab-pulse')
+	
 				if (p.pulseOnce) this.stopPulse()
 			}
 		}, delay)
@@ -155,17 +158,23 @@ class FloatingWidget {
 	toggle() {
 		this.isOpen = !this.isOpen
 		this.container.classList.toggle('open', this.isOpen)
-
+	
 		if (!this.clickedOnce) {
 			this.hideGreeting()
 			this.clickedOnce = true
 		}
-
+	
 		const p = this.options.pulse || {}
+	
 		if (this.isOpen) {
+			// Сбрасываем пульсацию при открытии
 			this.stopPulse()
+			this.mainBtn.classList.remove('fab-pulse')
 		} else {
-			if (p.enabled && p.target === 'main') this.startPulse(p)
+			// Возобновляем пульсацию при закрытии
+			if (p.enabled && p.target === 'main') {
+				this.startPulse(p)
+			}
 		}
 	}
 }

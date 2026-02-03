@@ -1,8 +1,9 @@
 class FloatingWidget {
-	constructor(selector, options = {}) {
-		/* =========================
+
+	/* =========================
 			INIT
-		========================= */
+	========================= */
+	constructor(selector, options = {}) {		
 		this.container = document.querySelector(selector)
 		if (!this.container) return
 

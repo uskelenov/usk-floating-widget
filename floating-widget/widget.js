@@ -25,6 +25,7 @@ class FloatingWidget {
 		this.root.appendChild(this.container)
 	}
 
+	/* ===== Greeting ===== */
 	renderGreeting() {
 		const g = this.options.greeting
 		if (!g?.enabled) return
@@ -45,12 +46,17 @@ class FloatingWidget {
 
 		this.greetingVisible = false
 		clearTimeout(this.greetingTimer)
+
 		this.greeting.style.opacity = '0'
 		this.greeting.style.transform = 'translateY(10px)'
 
-		setTimeout(() => { this.greeting?.remove(); this.greeting = null }, 200)
+		setTimeout(() => {
+			this.greeting?.remove()
+			this.greeting = null
+		}, 200)
 	}
 
+	/* ===== Items ===== */
 	renderItems() {
 		this.itemsWrap = document.createElement('div')
 		this.itemsWrap.className = 'fab-items'
@@ -59,27 +65,25 @@ class FloatingWidget {
 			const item = document.createElement('div')
 			item.classList.add('fab-item')
 
-			// Custom classes
 			if (btn.classes) {
 				if (Array.isArray(btn.classes)) item.classList.add(...btn.classes)
-				else if (typeof btn.classes === 'string') item.classList.add(...btn.classes.split(' '))
+				else item.classList.add(...btn.classes.split(' '))
 			}
 
-			// Icon
 			item.innerHTML = btn.icon || '+'
 
-			// Tooltip
 			if (btn.tooltip) {
 				const tip = document.createElement('div')
 				tip.className = 'fab-tooltip'
 				tip.innerHTML = btn.tooltip
 				item.appendChild(tip)
+
 				if (btn.alwaysShowLabel) item.classList.add('show-label')
 			}
 
-			// Custom colors
 			if (btn.background) item.style.background = btn.background
 			if (btn.color) item.style.color = btn.color
+
 			if (btn.hoverBackground) {
 				item.addEventListener('mouseenter', () => {
 					item.dataset.prevBg = item.style.background
@@ -89,9 +93,6 @@ class FloatingWidget {
 					item.style.background = item.dataset.prevBg || ''
 				})
 			}
-
-			// Pulse
-			if (btn.pulse) this.startPulse(item, btn)
 
 			if (btn.onClick) {
 				item.addEventListener('click', e => {
@@ -106,11 +107,18 @@ class FloatingWidget {
 		this.container.appendChild(this.itemsWrap)
 	}
 
+	/* ===== Main button ===== */
 	renderIcon(icon) {
 		if (!icon) return '☰'
-		if (typeof icon === 'string' && !icon.includes('<') && /\.(svg|png|jpe?g|webp|gif)$/i.test(icon)) {
+
+		if (
+			typeof icon === 'string' &&
+			!icon.includes('<') &&
+			/\.(svg|png|jpe?g|webp|gif)$/i.test(icon)
+		) {
 			return `<img src="${icon}" alt="" class="fab-main-icon">`
 		}
+
 		return icon
 	}
 
@@ -121,7 +129,6 @@ class FloatingWidget {
 
 		this.mainBtn.addEventListener('click', () => this.toggle())
 
-		// Pulse main button
 		const p = this.options.pulse
 		if (p?.enabled && p.target === 'main') {
 			this.startPulse(this.mainBtn, p)
@@ -130,19 +137,28 @@ class FloatingWidget {
 		this.container.appendChild(this.mainBtn)
 	}
 
+	/* ===== Toggle ===== */
 	toggle() {
 		this.isOpen = !this.isOpen
 		this.container.classList.toggle('open', this.isOpen)
+
 		if (this.greetingVisible) this.hideGreeting()
-		this.updatePulseVisibility()
+
+		const p = this.options.pulse
+		if (p?.enabled && p.target === 'main') {
+			this.resetPulse(this.mainBtn, p)
+		}
 	}
 
-	// Pulse logic
+	/* ===== Pulse ===== */
 	startPulse(el, options = {}) {
 		const { pulseDelay = 0, pulseOnce = false, pulseUntilClick = false } = options
+
 		const start = () => {
 			el.classList.add('fab-pulse')
-			if (pulseOnce) setTimeout(() => el.classList.remove('fab-pulse'), 2200)
+			if (pulseOnce) {
+				setTimeout(() => el.classList.remove('fab-pulse'), 2200)
+			}
 		}
 
 		if (pulseDelay) setTimeout(start, pulseDelay)
@@ -157,12 +173,12 @@ class FloatingWidget {
 		}
 	}
 
-	updatePulseVisibility() {
-		if (!this.mainBtn) return
-		const pulses = this.container.querySelectorAll('.fab-pulse')
-		pulses.forEach(el => {
-			if (this.isOpen) el.classList.add('paused')
-			else el.classList.remove('paused')
-		})
+	resetPulse(el, options = {}) {
+		el.classList.remove('fab-pulse')
+		void el.offsetWidth // force reflow
+
+		if (!this.isOpen) {
+			this.startPulse(el, options)
+		}
 	}
 }

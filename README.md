@@ -16,10 +16,10 @@
 document.addEventListener('DOMContentLoaded',()=>{
 	new FloatingWidget('#fab-widget',{
 		mainIcon:'/icons/chat.svg',
-		greeting:{enabled:true,text:'Привет! 👋<br>Чем могу помочь?',autoHide:true,delay:null},
+		greeting:{enabled:true,text:'Hello! 👋<br>How can I help you?',autoHide:true,delay:null},
 		pulse:{enabled:true,target:'main',pulseDelay:3000,pulseUntilClick:true},
 		buttons:[
-			{icon:'📞',tooltip:'Позвонить',background:'#2ecc71',color:'#fff',pulse:true,pulseDelay:2000,pulseOnce:true,onClick:()=>alert('Звонок')},
+			{icon:'📞',tooltip:'Call',background:'#2ecc71',color:'#fff',pulse:true,pulseDelay:2000,pulseOnce:true,onClick:()=>alert('Звонок')},
 			{icon:'💬',tooltip:'Telegram',background:'#229ED9',color:'#fff',hoverBackground:'#1c8acb',alwaysShowLabel:true,classes:['btn-telegram','is-primary'],onClick:()=>window.open('https://t.me/','_blank')},
 			{icon:'✉️',tooltip:'Email',background:'#f1c40f',color:'#111',classes:'btn-mail',onClick:()=>alert('Письмо')}
 		]

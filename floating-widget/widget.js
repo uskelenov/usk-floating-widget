@@ -1,120 +1,151 @@
 class FloatingWidget {
-	constructor(selector, options={}) {
-		this.root = document.querySelector(selector)
-		if(!this.root) return
+	constructor(selector, options = {}) {
+		this.container = document.querySelector(selector)
+		if (!this.container) return
+
 		this.options = options
 		this.isOpen = false
+		this.clickedOnce = false
 		this.pulseTimer = null
-		this.render()
+
+		this.container.classList.add('fab-container')
+
+		this.renderGreeting()
+		this.renderItems()
+		this.renderMain()
 	}
 
-	render() {
-		this.container = document.createElement('div')
-		this.container.className = 'fab-container'
+	renderGreeting() {
+		const g = this.options.greeting
+		if (!g || !g.enabled) return
 
-		this.renderMain()
-		this.renderItems()
+		this.greeting = document.createElement('div')
+		this.greeting.className = 'fab-greeting'
+		this.greeting.innerHTML = g.text
 
-		this.root.appendChild(this.container)
+		if (g.background) this.greeting.style.background = g.background
+		if (g.color) this.greeting.style.color = g.color
+
+		this.container.appendChild(this.greeting)
+
+		if (g.autoHide && typeof g.delay === 'number') {
+			setTimeout(() => this.hideGreeting(), g.delay)
+		}
+	}
+
+	hideGreeting() {
+		if (this.greeting) this.greeting.remove()
+		this.greeting = null
+	}
+
+	renderItems() {
+		const buttons = this.options.buttons || []
+		if (!buttons.length) return
+
+		this.items = document.createElement('div')
+		this.items.className = 'fab-items'
+
+		buttons.forEach(b => {
+			const btn = document.createElement('div')
+			btn.className = 'fab-item'
+			btn.innerHTML = this.renderIcon(b.icon)
+
+			if (b.background) btn.style.background = b.background
+			if (b.color) btn.style.color = b.color
+			if (b.hoverBackground) {
+				btn.addEventListener('mouseenter', () => btn.style.background = b.hoverBackground)
+				btn.addEventListener('mouseleave', () => btn.style.background = b.background)
+			}
+
+			if (b.classes) {
+				[].concat(b.classes).forEach(c => btn.classList.add(c))
+			}
+
+			if (b.tooltip) {
+				const tip = document.createElement('div')
+				tip.className = 'fab-tooltip'
+				tip.innerHTML = b.tooltip
+			
+				if (b.tooltipStyle) {
+					if (b.tooltipStyle.background) {
+						tip.style.background = b.tooltipStyle.background
+					}
+					if (b.tooltipStyle.color) {
+						tip.style.color = b.tooltipStyle.color
+					}
+				}
+			
+				btn.appendChild(tip)
+			
+				if (b.alwaysShowLabel) {
+					btn.classList.add('show-label')
+				}
+			}
+
+			btn.addEventListener('click', b.onClick || (() => {}))
+			this.items.appendChild(btn)
+		})
+
+		this.container.appendChild(this.items)
 	}
 
 	renderMain() {
 		this.mainBtn = document.createElement('div')
-		this.mainBtn.className='fab-main'
+		this.mainBtn.className = 'fab-main'
 		this.mainBtn.innerHTML = this.renderIcon(this.options.mainIcon)
 
-		// mainStyle
 		const s = this.options.mainStyle || {}
-		if(s.background) this.mainBtn.style.background = s.background
-		if(s.color) this.mainBtn.style.color = s.color
+		if (s.background) this.mainBtn.style.background = s.background
+		if (s.color) this.mainBtn.style.color = s.color
 
-		// pulseColor
-		const p = this.options.pulse||{}
-		if(p.pulseColor) this.mainBtn.style.setProperty('--fab-pulse-color', p.pulseColor)
+		const p = this.options.pulse || {}
+		if (p.pulseColor) {
+			this.mainBtn.style.setProperty('--fab-pulse-color', p.pulseColor)
+		}
 
-		this.mainBtn.addEventListener('click', ()=>this.toggle())
-
-		if(p.enabled && p.target==='main') this.startPulse()
+		this.mainBtn.addEventListener('click', () => this.toggle())
 
 		this.container.appendChild(this.mainBtn)
+
+		if (p.enabled) this.startPulse(p)
 	}
 
-	renderItems(){
-		this.itemsWrap = document.createElement('div')
-		this.itemsWrap.className='fab-items'
-
-		(this.options.buttons||[]).forEach(b=>{
-			const btn=document.createElement('div')
-			btn.className='fab-item'
-			if(b.classes){
-				if(Array.isArray(b.classes)) btn.classList.add(...b.classes)
-				else btn.classList.add(...b.classes.split(' '))
-			}
-			if(b.background) btn.style.background=b.background
-			if(b.color) btn.style.color=b.color
-			if(b.icon) btn.innerHTML=b.icon
-
-			// tooltip
-			if(b.tooltip){
-				const tip=document.createElement('div')
-				tip.className='fab-tooltip'
-				tip.innerHTML=b.tooltip
-				if(b.tooltipStyle){
-					if(b.tooltipStyle.background) tip.style.background=b.tooltipStyle.background
-					if(b.tooltipStyle.color) tip.style.color=b.tooltipStyle.color
-				}
-				btn.appendChild(tip)
-				if(b.alwaysShowLabel) btn.classList.add('show-label')
-			}
-
-			if(b.hoverBackground){
-				btn.addEventListener('mouseenter',()=>{btn.dataset.prevBg=btn.style.background; btn.style.background=b.hoverBackground})
-				btn.addEventListener('mouseleave',()=>{btn.style.background=btn.dataset.prevBg||''})
-			}
-
-			if(b.onClick) btn.addEventListener('click',e=>{e.stopPropagation(); b.onClick()})
-
-			this.itemsWrap.appendChild(btn)
-		})
-
-		this.container.appendChild(this.itemsWrap)
-	}
-
-	renderIcon(icon){
-		if(!icon) return ''
-		if(typeof icon==='string' && !icon.includes('<') && /\.(svg|png|jpe?g|webp|gif)$/i.test(icon)){
-			return `<img decoding="async" src="${icon}" class="fab-main-icon" alt="">`
+	renderIcon(icon) {
+		if (
+			typeof icon === 'string' &&
+			!icon.includes('<') &&
+			/\.(svg|png|jpe?g|webp|gif)$/i.test(icon)
+		) {
+			return `<img src="${icon}" class="fab-main-icon">`
 		}
-		return icon
+		return icon || ''
 	}
 
-	startPulse(){
-		const p = this.options.pulse||{}
-		const delay = p.pulseDelay||2500
-		this.resetPulse()
-		this.pulseTimer = setInterval(()=>{
-			if(!this.isOpen){
-				this.mainBtn.classList.remove('fab-pulse')
-				void this.mainBtn.offsetWidth
+	startPulse(pulse) {
+		const delay = pulse.pulseDelay || 2500
+		this.pulseTimer = setInterval(() => {
+			if (!this.isOpen) {
 				this.mainBtn.classList.add('fab-pulse')
+				setTimeout(() => this.mainBtn.classList.remove('fab-pulse'), 1200)
+				if (pulse.pulseOnce) this.stopPulse()
 			}
-		},delay)
+		}, delay)
 	}
 
-	resetPulse(){
-		if(this.pulseTimer) clearInterval(this.pulseTimer)
-		this.pulseTimer=null
-		if(this.mainBtn) this.mainBtn.classList.remove('fab-pulse')
+	stopPulse() {
+		clearInterval(this.pulseTimer)
+		this.pulseTimer = null
 	}
 
-	toggle(){
-		this.isOpen=!this.isOpen
-		this.container.classList.toggle('open',this.isOpen)
-		const p=this.options.pulse||{}
-		if(this.isOpen){
-			this.resetPulse()
-		}else{
-			if(p.enabled && p.target==='main') this.startPulse()
+	toggle() {
+		this.isOpen = !this.isOpen
+		this.container.classList.toggle('open', this.isOpen)
+
+		if (!this.clickedOnce) {
+			this.hideGreeting()
+			this.clickedOnce = true
 		}
+
+		if (this.isOpen) this.stopPulse()
 	}
 }

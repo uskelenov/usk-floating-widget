@@ -34,6 +34,11 @@ class FloatingWidget {
 		this.greeting = document.createElement('div')
 		this.greeting.className = 'fab-greeting'
 		this.greeting.innerHTML = g.text
+
+		// Custom greeting styles
+		if (g.background) this.greeting.style.background = g.background
+		if (g.color) this.greeting.style.color = g.color
+		
 		this.container.appendChild(this.greeting)
 
 		if (g.autoHide && typeof g.delay === 'number') {

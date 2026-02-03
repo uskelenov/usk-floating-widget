@@ -17,7 +17,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 	new FloatingWidget('#fab-widget', {
-		mainIcon: '💬', // emoji | path to image | inline SVG
+		mainIcon: '💬',
+		mainStyle: { background:'#222', color:'#fff' },
 		greeting: {
 			enabled: true,
 			text: 'Привет! 👋<br>Чем могу помочь?',
@@ -26,37 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		},
 		pulse: {
 			enabled: true,
-			target: 'main',
 			pulseDelay: 3000,
-			pulseOnce: false,
+			pulseColor: 'rgba(34,197,94,.45)',
 			pulseUntilClick: true
 		},
 		buttons: [
-			{
-				icon: '📞',
-				tooltip: 'Позвонить',
-				background: '#222',
-				color: '#fff',
-				onClick: () => alert('Звонок')
-			},
-			{
-				icon: '💬',
-				tooltip: 'Telegram',
-				background: '#222',
-				color: '#fff',
-				hoverBackground: '#1c8acb',
-				alwaysShowLabel: true,
-				classes: ['btn-telegram','is-primary'],
-				onClick: () => window.open('https://t.me/', '_blank')
-			},
-			{
-				icon: '✉️',
-				tooltip: 'Email',
-				background: '#222',
-				color: '#fff',
-				classes: 'btn-mail',
-				onClick: () => alert('Письмо')
-			}
+			{ icon:'📞', tooltip:'Позвонить', background:'#222', color:'#fff', onClick:()=>alert('Звонок') },
+			{ icon:'💬', tooltip:'Telegram', classes:['btn-telegram','is-primary'], alwaysShowLabel:true, onClick:()=>window.open('https://t.me/') },
+			{ icon:'✉️', tooltip:'Email', classes:'btn-mail', onClick:()=>alert('Email') }
 		]
 	})
 })

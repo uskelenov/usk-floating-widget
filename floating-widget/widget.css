@@ -1,1 +1,151 @@
+/* ===== Floating Action Widget ===== */
+.fab-container {
+	position: fixed;
+	right: 24px;
+	bottom: 24px;
+	z-index: 9999;
+	font-family: system-ui, -apple-system, sans-serif;
+}
 
+.fab-main {
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	background: #111;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	box-shadow: 0 10px 30px rgba(0,0,0,.25);
+	transition: transform .25s ease;
+	user-select: none;
+}
+
+.fab-main:hover {
+	transform: scale(1.05);
+}
+
+.fab-items {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-bottom: 12px;
+	opacity: 0;
+	transform: translateY(10px);
+	pointer-events: none;
+	transition: all .25s ease;
+}
+
+.fab-container.open .fab-items {
+	opacity: 1;
+	transform: translateY(0);
+	pointer-events: auto;
+}
+
+.fab-item {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background: #fff;
+	color: #111;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba(0,0,0,.15);
+	position: relative;
+}
+
+.fab-tooltip {
+	position: absolute;
+	right: 60px;
+	background: #111;
+	color: #fff;
+	padding: 6px 10px;
+	border-radius: 6px;
+	font-size: 13px;
+	white-space: nowrap;
+	opacity: 0;
+	transform: translateX(5px);
+	pointer-events: none;
+	transition: .2s;
+}
+
+.fab-item:hover .fab-tooltip,
+.fab-item.show-label .fab-tooltip {
+	opacity: 1;
+	transform: translateX(0);
+}
+
+.fab-greeting {
+	position: absolute;
+	right: 0;
+	bottom: 72px;
+	background: #111;
+	color: #fff;
+	padding: 12px 16px;
+	border-radius: 12px;
+	max-width: 240px;
+	font-size: 14px;
+	box-shadow: 0 10px 30px rgba(0,0,0,.25);
+	animation: fadeUp .3s ease;
+}
+
+@keyframes fadeUp {
+	from { opacity: 0; transform: translateY(10px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Pulse animation ===== */
+@keyframes fabPulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba(0,0,0,.35);
+	}
+	70% {
+		box-shadow: 0 0 0 14px rgba(0,0,0,0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(0,0,0,0);
+	}
+}
+
+.fab-pulse {
+	animation: fabPulse 2s infinite;
+}
+
+.fab-pulse.paused {
+	animation-play-state: paused;
+}
+
+.fab-main-icon {
+	width: 26px;
+	height: 26px;
+	object-fit: contain;
+	pointer-events: none;
+}
+
+/* ===== Custom button styles ===== */
+.btn-phone {
+	background: #111;
+	color: #fff;
+}
+
+.btn-telegram {
+	background: #111;
+	color: #fff;
+}
+
+.btn-mail {
+	background: #111;
+	color: #fff;
+}
+
+.is-primary {
+	box-shadow: 0 0 0 3px rgba(0,0,0,.15);
+}
+
+/* Остановка pulse при hover */
+.fab-item:hover.fab-pulse {
+	animation-play-state: paused;
+}

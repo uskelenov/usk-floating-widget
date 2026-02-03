@@ -17,7 +17,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 	new FloatingWidget('#fab-widget', {
-		mainIcon: '💬',  // path to file, emoji, or inline SVG
+		mainIcon: '💬', // emoji | path to image | inline SVG
 		greeting: {
 			enabled: true,
 			text: 'Привет! 👋<br>Чем могу помочь?',
@@ -35,17 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			{
 				icon: '📞',
 				tooltip: 'Позвонить',
-				background: '#2ecc71',
+				background: '#222',
 				color: '#fff',
-				pulse: true,
-				pulseDelay: 2000,
-				pulseOnce: true,
 				onClick: () => alert('Звонок')
 			},
 			{
 				icon: '💬',
 				tooltip: 'Telegram',
-				background: '#229ED9',
+				background: '#222',
 				color: '#fff',
 				hoverBackground: '#1c8acb',
 				alwaysShowLabel: true,
@@ -55,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			{
 				icon: '✉️',
 				tooltip: 'Email',
-				background: '#f1c40f',
-				color: '#111',
+				background: '#222',
+				color: '#fff',
 				classes: 'btn-mail',
 				onClick: () => alert('Письмо')
 			}
